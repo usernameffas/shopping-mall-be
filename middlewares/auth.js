@@ -31,4 +31,17 @@ authMiddleware.authenticate = (req, res, next) => {
   }
 };
 
+authMiddleware.checkAdmin = async (req, res, next) => {
+  try {
+    const User = require("../models/User");
+    const user = await User.findById(req.userId);
+    if (!user || user.level !== "admin") {
+      throw new Error("관리자만 접근 가능합니다.");
+    }
+    next();
+  } catch (error) {
+    res.status(403).json({ status: "fail", error: error.message });
+  }
+};
+
 module.exports = authMiddleware;

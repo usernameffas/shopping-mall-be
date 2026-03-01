@@ -16,4 +16,12 @@ router.post(
 // 구경하는 건 누구나 가능하니까 검문소 없이 바로 통과!
 router.get("/", productController.getProducts);
 
+// 상품 수정 (PUT /api/product/:id)
+router.put(
+  "/:id",
+  authMiddleware.authenticate,
+  authMiddleware.checkAdmin,
+  productController.updateProduct
+);
+
 module.exports = router;
