@@ -11,4 +11,4 @@ router.post("/login", userController.loginWithEmail);
 
 // 3. 내 정보 조회 (📍 문지기가 신분증 검사 후 통과시켜야 함)
 router.get("/me", authMiddleware.authenticate, userController.getUser);
-module.exports = router;
+module.exports = router; 
