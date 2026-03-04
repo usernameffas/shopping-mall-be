@@ -15,6 +15,8 @@ router.post(
 // 📍 상품 전체 조회 (GET /api/product)
 // 구경하는 건 누구나 가능하니까 검문소 없이 바로 통과!
 router.get("/", productController.getProducts);
+// 상품 상세 조회
+router.get("/:id", productController.getProductById);
 
 // 상품 수정 (PUT /api/product/:id)
 router.put(

@@ -56,4 +56,15 @@ productController.updateProduct = async (req, res) => {
   }
 };
 
+// 상품 상세 조회
+productController.getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    res.status(200).json({ status: "success", product });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
 module.exports = productController;
