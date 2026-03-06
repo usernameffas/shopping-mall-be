@@ -12,4 +12,7 @@ router.post("/", authMiddleware.authenticate, cartController.addItemToCart);
 // 카트 아이템 삭제
 router.delete("/:itemId", authMiddleware.authenticate, cartController.deleteCartItem);
 
+// 카트 수량 변경
+router.put("/:itemId", authMiddleware.authenticate, cartController.updateCartItem);
+
 module.exports = router;

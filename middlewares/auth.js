@@ -29,7 +29,7 @@ authMiddleware.authenticate = (req, res, next) => {
   } catch (error) {
     res.status(401).json({ status: "fail", error: error.message });
   }
-};
+}; 
 
 authMiddleware.checkAdmin = async (req, res, next) => {
   try {
