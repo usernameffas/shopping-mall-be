@@ -1,6 +1,9 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 const userController = {};
 
 // --- [기존 회원가입 업무] ---
@@ -66,6 +69,27 @@ userController.getUser = async (req, res) => {
     }
 
     throw new Error("해당 사용자를 찾을 수 없습니다.");
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+userController.loginWithGoogle = async (req, res) => {
+  try {
+    const { credential } = req.body;
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const { email, name } = ticket.getPayload();
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({ email, name, password: "google", level: "user" });
+      await user.save();
+    }
+    const token = user.generateToken();
+    return res.status(200).json({ status: "success", user, token });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
