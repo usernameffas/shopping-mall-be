@@ -59,7 +59,7 @@ userController.loginWithGoogle = async (req, res) => {
     const { email, name } = ticket.getPayload();
     let user = await User.findOne({ email });
     if (!user) {
-      user = new User({ email, name, password: "google", level: "user" });
+      user = new User({ email, name, password: "google", level: "customer" });
       await user.save();
     }
     const token = user.generateToken();
