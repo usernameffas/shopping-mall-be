@@ -49,6 +49,7 @@ userController.getUser = async (req, res) => {
 
 userController.loginWithGoogle = async (req, res) => {
   try {
+    console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID); // ← 추가
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     const { credential } = req.body;
     const ticket = await client.verifyIdToken({
@@ -64,6 +65,7 @@ userController.loginWithGoogle = async (req, res) => {
     const token = user.generateToken();
     return res.status(200).json({ status: "success", user, token });
   } catch (error) {
+    console.log("구글 로그인 에러:", error.message); // ← 추가
     res.status(400).json({ status: "fail", error: error.message });
   }
 };
