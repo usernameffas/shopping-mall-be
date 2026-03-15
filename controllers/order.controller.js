@@ -10,7 +10,7 @@ orderController.createOrder = async (req, res) => {
 
     const cart = await Cart.findOne({ userId }).populate("items.productId");
     if (!cart || cart.items.length === 0) {
-      throw new Error("장바구니가 비어있습니다.");
+      throw new Error("Cart is empty.");
     }
 
     const orderNum = "ORD" + Date.now();
