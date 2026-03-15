@@ -56,6 +56,20 @@ productController.updateProduct = async (req, res) => {
   }
 };
 
+productController.getProducts = async (req, res) => {
+  try {
+    const { name, category } = req.query;
+    let query = { isDeleted: false };
+    if (name) query.name = { $regex: name, $options: "i" };
+    if (category) query.category = { $in: [category] };
+    const products = await Product.find(query);
+    res.status(200).json({ status: "success", products });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+
 // 상품 상세 조회
 productController.getProductById = async (req, res) => {
   try {
@@ -65,6 +79,6 @@ productController.getProductById = async (req, res) => {
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
-};
+};  
 
 module.exports = productController;
