@@ -1,5 +1,6 @@
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
+const Product = require("../models/Product");
 
 const orderController = {};
 
@@ -33,21 +34,18 @@ orderController.createOrder = async (req, res) => {
     });
 
     await order.save();
-    cart.items = [];
-    await cart.save();
 
-        // order 저장 후 stock 차감 추가
-    await order.save();
-
-    // 각 아이템 재고 차감
     for (const item of cart.items) {
-      await Product.findByIdAndUpdate(item.productId._id, {
-        $inc: { [`stock.${item.size}`]: -item.qty }
-      });
+      const product = await Product.findById(item.productId._id);
+      if (product) {
+        product.stock[item.size] = (product.stock[item.size] || 0) - item.qty;
+        product.markModified('stock');
+        await product.save();
+      }
     }
 
-cart.items = [];
-await cart.save();
+    cart.items = [];
+    await cart.save();
 
     res.status(200).json({ status: "success", orderNum });
   } catch (error) {
