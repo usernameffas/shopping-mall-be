@@ -14,6 +14,14 @@ orderController.createOrder = async (req, res) => {
       throw new Error("Cart is empty.");
     }
 
+    // 재고 체크
+    for (const item of cart.items) {
+      const product = await Product.findById(item.productId._id);
+      if (!product || (product.stock[item.size] || 0) < item.qty) {
+        throw new Error(`${product?.name || '상품'} ${item.size} 사이즈 재고가 부족합니다.`);
+      }
+    }
+
     const orderNum = "ORD" + Date.now();
     const totalPrice = cart.items.reduce(
       (sum, item) => sum + item.productId.price * item.qty, 0
